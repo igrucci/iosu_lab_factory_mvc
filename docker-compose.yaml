@@ -1,0 +1,14 @@
+version: '3.5'
+
+services:
+  db_factory:
+    container_name: db_factory
+
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=igor1
+      - POSTGRES_USER=igor1
+      - POSTGRES_DB=factory
+    image: postgres:16.2-alpine
+

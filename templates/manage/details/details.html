@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Details</title>
+</head>
+<body>
+<h1>List of Details</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Material</th>
+        <th>Count of material</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {{range .}}
+    <tr>
+        <td><a href="/manage/detail/{{.Id}}">{{.Id}}</a></td>
+        <td>{{.DetailName}}</td>
+        <td>{{.MaterialName}}</td>
+        <td>{{.CountMaterial}}</td>
+    </tr>
+    {{end}}
+    </tbody>
+</table>
+<br>
+<div>
+    <button onclick="showCreateForm()">Create</button>
+
+</div>
+
+<div id="createFormContainer" style="display: none;">
+    <h2>Create Detail</h2>
+    <form id="createForm">
+        <label for="detailName">Имя детали:</label><br>
+        <input type="text" id="detailName" name="detailName" ><br><br>
+
+        <label for="materialName">Материал:</label><br>
+        <select id="materialName" name="materialName">
+            <option value="steel">steel</option>
+            <option value="aluminum">aluminum</option>
+            <option value="cast iron">cast iron</option>
+        </select><br><br>
+
+        <label for="countMaterial">Количество:</label><br>
+        <input type="number" id="countMaterial" name="countMaterial" ><br><br>
+
+        <button type="submit">Create</button>
+    </form>
+</div>
+
+<script>
+    function showCreateForm(detailName, materialName, countMaterial) {
+
+        document.getElementById('materialName').value = materialName;
+
+
+
+        document.getElementById('createForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const detailName = document.getElementById('detailName').value;
+            const materialName = document.getElementById('materialName').value;
+            const countMaterial = document.getElementById('countMaterial').value;
+
+            const queryString = `detailName=${encodeURIComponent(detailName)}&materialName=${encodeURIComponent(materialName)}&countMaterial=${encodeURIComponent(countMaterial)}`;
+
+            fetch('/manage/detail'  + '?' + queryString, {
+                method: 'POST'
+            }).then(response => {
+                if (response.ok) {
+                    alert('Detail created successfully');
+                    window.location.reload();
+                } else {
+                    alert('Failed to create detail');
+                }
+            }).catch(error => {
+                console.error('Error creating detail:', error);
+                alert('Failed to update detail');
+            });
+        });
+
+        document.getElementById('createFormContainer').style.display = 'block';
+    }
+</script>
+<br>
+<a href="/manage">Menu</a>
+</body>
+</html>

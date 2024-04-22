@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сustomer Details</title>
+</head>
+<body>
+<h1>Customer Details</h1>
+<div>
+    <p>ID: {{.Id}}</p>
+    <p>Name: {{.CustomerName}}</p>
+
+</div>
+
+<div>
+    <button onclick="showUpdateForm('{{.Id}}', '{{.CustomerName}}')">Update</button>
+    <button onclick="confirmDelete('{{.Id}}')">Delete</button>
+</div>
+
+<div id="updateFormContainer" style="display: none;">
+    <h2>Update Worker</h2>
+    <form id="updateForm">
+        <label for="customerName">Имя компании:</label><br>
+        <input type="text" id="customerName" name="customerName" required value="{{.CustomerName}}"><br><br>
+        <button type="submit">Update</button>
+    </form>
+</div>
+
+<script>
+    function showUpdateForm(id, customerName) {
+        document.getElementById('customerName').value = customerName;
+
+        document.getElementById('updateForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const customerName = document.getElementById('customerName').value;
+
+            const queryString = `customerName=${encodeURIComponent(customerName)}`;
+
+            fetch('/manage/customer/' + id + '?' + queryString, {
+                method: 'PUT'
+            }).then(response => {
+                if (response.ok) {
+                    alert('Customer updated successfully');
+                    window.location.reload();
+                } else {
+                    alert('Failed to update customer');
+                }
+            }).catch(error => {
+                console.error('Error updating customer:', error);
+                alert('Failed to update customer');
+            });
+        });
+
+        document.getElementById('updateFormContainer').style.display = 'block';
+    }
+
+    function confirmDelete(id) {
+        if (confirm("Are you sure you want to delete this customer?")) {
+            fetch('/manage/customer/' + id, {
+                method: 'DELETE'
+            }).then(response => {
+                if (response.ok) {
+                    alert('Worker deleted successfully');
+                    window.location.href = '/manage/customer';
+
+                } else {
+                    alert('Failed to delete customer');
+                }
+            }).catch(error => {
+                console.error('Error deleting customer:', error);
+                alert('Failed to delete customer');
+            });
+        }
+    }
+</script>
+<br>
+<a href="/manage">Menu</a>
+</body>
+</html>

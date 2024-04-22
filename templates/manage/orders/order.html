@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+</head>
+<body>
+<h1>Order Details</h1>
+<div>
+    <p>ID: {{.Id}}</p>
+    <p>Detail Name: {{.DetailName}}</p>
+    <p>Count Detail: {{.CountDetail}}</p>
+    <p>Customer Name: {{.CustomerName}}</p>
+    <p>Date Registration: {{.DateRegistration.Time.Format "2006-01-02 15:04"}}</p>
+    <p>Status: {{.Status}}</p>
+
+</div>
+
+<div>
+    <button onclick="showUpdateForm('{{.Id}}', '{{.DetailName}}', '{{.CountDetail}}', '{{.CustomerName}}', '{{.DateRegistration}}', '{{.Status}}')">Update</button>
+    <button onclick="confirmDelete('{{.Id}}')">Delete</button>
+</div>
+
+<div id="updateFormContainer" style="display: none;">
+    <h2>Update Order</h2>
+    <form id="updateForm">
+
+        <label for="detailName">Detail Name:</label><br>
+        <select id="detailName" name="detailName">
+            <option value="brake rotor">brake rotor</option>
+            <option value="brake disc">brake disc</option>
+            <option value="impeller">impeller</option>
+        </select><br><br>
+
+        <label for="countDetail">Count Detail:</label><br>
+        <input type="number" id="countDetail" name="countDetail" min ="1" max="100" required><br><br>
+
+        <label for="customerName">Customer Name:</label><br>
+        <input type="text" id="customerName" name="customerName" required><br><br>
+
+        <label for="date">Select date:</label>
+        <input type="date" id="date" name="date">
+
+        <label for="time">Select time:</label>
+        <input type="time" id="time" name="time"><br><br>
+
+        <label for="status">Status:</label><br>
+        <select id="status" name="status">
+            <option value="available">available</option>
+            <option value="in-progress">in-progress</option>
+            <option value="completed">completed</option>
+        </select><br><br>
+
+        <button type="submit">Update</button>
+    </form>
+</div>
+
+<script>
+    function showUpdateForm(id, detailName, countDetail, customerName, dateRegistration, status) {
+        document.getElementById('detailName').value = detailName;
+        document.getElementById('countDetail').value = countDetail;
+        document.getElementById('customerName').value = customerName;
+        document.getElementById('date').value = dateRegistration;
+        document.getElementById('status').value = status;
+
+
+        document.getElementById('updateForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const detailName = document.getElementById('detailName').value;
+            const countDetail = document.getElementById('countDetail').value;
+            const customerName = document.getElementById('customerName').value;
+            var date = document.getElementById("date").value;
+            var time = document.getElementById("time").value;
+            var formattedDate = time + ":00-00"
+            var dateTime = date + " " + formattedDate;
+            const dateRegistration = dateTime;
+            const status = document.getElementById('status').value;
+
+
+            const queryString = `detailName=${encodeURIComponent(detailName)}&countDetail=${encodeURIComponent(countDetail)}&customerName=${encodeURIComponent(customerName)}&dateRegistration=${encodeURIComponent(dateRegistration)}&status=${encodeURIComponent(status)}`;
+
+             fetch('/manage/order/' + id + '?' + queryString, {
+                method: 'PUT'
+            }).then(response => {
+                if (response.ok) {
+                    alert('Order updated successfully');
+                    window.location.reload();
+                } else {
+                    alert('Failed to update order');
+                }
+            }).catch(error => {
+                console.error('Error updating order:', error);
+                alert('Failed to update order');
+            });
+        });
+
+        document.getElementById('updateFormContainer').style.display = 'block';
+    }
+
+    function confirmDelete(id) {
+        if (confirm("Are you sure you want to delete this order?")) {
+            fetch('/manage/order/' + id, {
+                method: 'DELETE'
+            }).then(response => {
+                if (response.ok) {
+                    alert('Order deleted successfully');
+                    window.location.href = '/manage/order';
+
+                } else {
+                    alert('Failed to delete order');
+                }
+            }).catch(error => {
+                console.error('Error deleting order:', error);
+                alert('Failed to delete order');
+            });
+        }
+    }
+</script>
+<br>
+<a href="/manage">Menu</a>
+</body>
+</html>

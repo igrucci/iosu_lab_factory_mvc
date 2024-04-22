@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Orders</title>
+</head>
+<body>
+<h1>List of Orders</h1>
+<div>
+    <label for="statusSelect">Select Status:</label>
+    <select id="statusSelect" name="status">
+        <option value="">All</option>
+        <option value="available">Available</option>
+        <option value="in-progress">In Progress</option>
+        <option value="completed">Completed</option>
+    </select>
+    <button onclick="searchOrders()">Search</button>
+</div>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>DetailName</th>
+        <th>CountDetail</th>
+        <th>CustomerName</th>
+        <th>DateRegistration</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{range .}}
+    <tr>
+        <td><a href="/manage/order/{{.Id}}">{{.Id}}</a></td>
+        <td>{{.DetailName}}</td>
+        <td>{{.CountDetail}}</td>
+        <td>{{.CustomerName}}</td>
+        <td>{{.DateRegistration.Time.Format "2006-01-02 15:04"}}</td>
+        <td>{{.Status}}</td>
+    </tr>
+    {{end}}
+    </tbody>
+</table>
+<br>
+<div>
+    <button onclick="showCreateForm()">Create</button>
+</div>
+
+<div id="createFormContainer" style="display: none;">
+    <h2>Create Order</h2>
+    <form id="createForm">
+        <label for="detailName">Detail Name:</label><br>
+        <select id="detailName" name="detailName">
+            <option value="brake rotor">brake rotor</option>
+            <option value="brake disc">brake disc</option>
+            <option value="impeller">impeller</option>
+        </select><br><br>
+
+        <label for="countDetail">Count Detail:</label><br>
+        <input type="number" id="countDetail" name="countDetail" required><br><br>
+
+        <label for="customerName">Customer Name:</label><br>
+        <input type="text" id="customerName" name="customerName" required><br><br>
+
+        <label for="date">Select date:</label>
+        <input type="date" id="date" name="date">
+
+        <label for="time">Select time:</label>
+        <input type="time" id="time" name="time"><br><br>
+
+        <label for="status">Status:</label><br>
+        <select id="status" name="status">
+            <option value="available">Available</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
+        </select><br><br>
+
+        <button type="submit">Create</button>
+    </form>
+</div>
+
+<script>
+    function showCreateForm() {
+        document.getElementById('createFormContainer').style.display = 'block';
+    }
+
+    function searchOrders() {
+        const status = document.getElementById('statusSelect').value;
+        const url = '/manage/order?param=' + status;
+        window.location.href = url;
+    }
+
+    document.getElementById('createForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const detailName = document.getElementById('detailName').value;
+        const countDetail = document.getElementById('countDetail').value;
+        const customerName = document.getElementById('customerName').value;
+        var date = document.getElementById("date").value;
+        var time = document.getElementById("time").value;
+        var formattedDate = time + ":00-00";
+        var dateTime = date + " " + formattedDate;
+        const dateRegistration = dateTime;
+        const status = document.getElementById('status').value;
+
+        const queryString = `customerName=${encodeURIComponent(customerName)}&detailName=${encodeURIComponent(detailName)}&countDetail=${encodeURIComponent(countDetail)}&dateRegistration=${encodeURIComponent(dateRegistration)}&status=${encodeURIComponent(status)}`;
+        fetch('/manage/order', {
+            method: 'POST',
+            body: queryString,
+            headers: {
+
+
+    }
+    }).then(response => {
+            if (response.ok) {
+                alert('Order created successfully');
+                window.location.reload();
+            } else {
+                alert('Failed to create order');
+            }
+        }).catch(error => {
+            console.error('Error creating order:', error);
+            alert('Failed to create order');
+        });
+    });
+</script>
+<br>
+<a href="/manage">Menu</a>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Stats</title>
+</head>
+<body>
+<h1>Detail Stats</h1>
+<table>
+    <tr>
+        <th>Detail</th>
+        <th>January</th>
+        <th>February</th>
+        <th>March</th>
+        <th>April</th>
+        <th>May</th>
+        <th>June</th>
+        <th>July</th>
+        <th>August</th>
+        <th>September</th>
+        <th>October</th>
+        <th>November</th>
+        <th>December</th>
+
+    </tr>
+
+    {{range .}}
+    <tr>
+        <td>{{.DetailName}}</td>
+        <td>{{.January}}</td>
+        <td>{{.February}}</td>
+        <td>{{.March}}</td>
+        <td>{{.April}}</td>
+        <td>{{.May}}</td>
+        <td>{{.June}}</td>
+        <td>{{.July}}</td>
+        <td>{{.August}}</td>
+        <td>{{.September}}</td>
+        <td>{{.October}}</td>
+        <td>{{.November}}</td>
+        <td>{{.December}}</td>
+    </tr>
+    {{end}}
+</table>
+
+<br>
+<a href="/manage">Menu</a>
+</body>
+</html>

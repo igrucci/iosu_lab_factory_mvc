@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Order</title>
+</head>
+<body>
+<h1>Create Order</h1>
+<form id="orderForm">
+    <label for="customerName">Customer Name:</label><br>
+    <input type="text" id="customerName" name="customerName" required><br><br>
+
+    <label for="detailName">Detail Name:</label><br>
+    <select id="detailName" name="detailName">
+        <option value="brake rotor">brake rotor</option>
+        <option value="brake disc">brake disc</option>
+        <option value="impeller">impeller</option>
+    </select><br><br>
+
+    <label for="count">Count:</label><br>
+    <input type="number" id="count" name="count" min ="1" max="100" required><br><br>
+
+    <button type="submit">Create Order</button>
+</form>
+
+<script>
+    document.getElementById('orderForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const customerName = document.getElementById('customerName').value;
+        const detailName = document.getElementById('detailName').value;
+        const count = document.getElementById('count').value;
+
+        const queryString = 'customerName=' + encodeURIComponent(customerName) + '&detailName=' + encodeURIComponent(detailName) + '&count=' + encodeURIComponent(count);
+
+        fetch('/factory/order?' + queryString, {
+            method: 'POST'
+        }).then(response => {
+            if (response.ok) {
+                alert('Order created successfully');
+                window.location.href = '/factory/manage';
+            } else {
+                alert('Failed to create order');
+            }
+        }).catch(error => {
+            console.error('Error creating order:', error);
+            alert('Failed to create order');
+        });
+    });
+</script>
+</body>
+</html>
